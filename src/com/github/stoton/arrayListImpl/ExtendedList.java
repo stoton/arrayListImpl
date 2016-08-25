@@ -56,13 +56,6 @@ public class ExtendedList<T> implements Iterable<T> {
 	return workArray;
     }
 
-    public List<T> getArrayList() {
-	List<T> list = new ArrayList<T>();
-	for (T t : workArray)
-	    list.add(t);
-	return list;
-    }
-
     public int find(T arg0) {
 	for (int i = 0; i < size(); i++) {
 	    if (arg0 != null && workArray[i] != null && workArray[i].equals(arg0))
@@ -106,6 +99,7 @@ public class ExtendedList<T> implements Iterable<T> {
 	}
 	return array;
     }
+ 
 
     private void rangeCheck(int index) {
 	if (index >= this.size() || index < 0)
