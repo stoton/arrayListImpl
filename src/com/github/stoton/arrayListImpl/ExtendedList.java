@@ -28,7 +28,10 @@ public class ExtendedList<T> implements Iterable<T> {
 
     public void add(T arg0) {
 	extendCapacity(size++);
-	workArray[size] = arg0;
+	T supportArray[] = (T[]) Array.newInstance(classType, size());
+	supportArray = Arrays.copyOf(workArray, size());
+	supportArray[size - 1] = arg0;
+	workArray = Arrays.copyOf(supportArray, size());
     }
 
     public T get(int index) {
@@ -89,6 +92,21 @@ public class ExtendedList<T> implements Iterable<T> {
 	}
     }
 
+    public T[] copyToArray(int begin, int end) {
+	rangeCheck(begin);
+	rangeCheck(end-1);
+
+	begin = Math.min(begin, end);
+	end = Math.max(begin, end);
+
+	T[] array = (T[]) Array.newInstance(classType, end);
+
+	for (int i = begin; i < end; i++) {
+	    array[i] = workArray[i];
+	}
+	return array;
+    }
+
     private void rangeCheck(int index) {
 	if (index >= this.size() || index < 0)
 	    throw new IndexOutOfBoundsException();
@@ -113,6 +131,7 @@ public class ExtendedList<T> implements Iterable<T> {
     public Iterator<T> iterator() {
 	return new Iterator<T>() {
 
+	    private int start = 0;
 	    private int current;
 
 	    @Override
