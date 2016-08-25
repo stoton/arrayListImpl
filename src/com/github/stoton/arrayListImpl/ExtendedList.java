@@ -28,11 +28,9 @@ public class ExtendedList<T> implements Iterable<T> {
 
     public void add(T arg0) {
 	extendCapacity(size++);
-	T supportArray[] = (T[]) Array.newInstance(classType, size());
-	supportArray = Arrays.copyOf(workArray, size());
-	supportArray[size - 1] = arg0;
+	workArray[size] = arg0;
 	workArray = (T[]) Array.newInstance(classType, size() + 1);
-	workArray = Arrays.copyOf(supportArray, size());
+	
     }
 
     public T get(int index) {
