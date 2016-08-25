@@ -29,8 +29,6 @@ public class ExtendedList<T> implements Iterable<T> {
     public void add(T arg0) {
 	extendCapacity(size++);
 	workArray[size] = arg0;
-	workArray = (T[]) Array.newInstance(classType, size() + 1);
-	
     }
 
     public T get(int index) {
@@ -115,7 +113,6 @@ public class ExtendedList<T> implements Iterable<T> {
     public Iterator<T> iterator() {
 	return new Iterator<T>() {
 
-	    private int start = 0;
 	    private int current;
 
 	    @Override
