@@ -3,11 +3,13 @@ package com.github.stoton.arrayListImpl;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
 @SuppressWarnings("unchecked")
-public class ExtendedList<T> {
+public class ExtendedList<T> implements Iterable<T> {
 
     private int size = 0;
     private Class<T> classType;
@@ -110,5 +112,25 @@ public class ExtendedList<T> {
 	    workArray = Arrays.copyOf(workArray, newCapacity);
 	}
     }
-}
 
+    @Override
+    public Iterator<T> iterator() {
+	return new Iterator<T>() {
+
+	    private int start = 0;
+	    private int current;
+
+	    @Override
+	    public boolean hasNext() {
+		return current < workArray.length;
+	    }
+
+	    @Override
+	    public T next() {
+		if (!hasNext())
+		    throw new NoSuchElementException();
+		return workArray[current++];
+	    }
+	};
+    }
+}
