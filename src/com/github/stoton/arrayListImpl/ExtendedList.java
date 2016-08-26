@@ -3,9 +3,13 @@ package com.github.stoton.arrayListImpl;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
@@ -25,7 +29,6 @@ public class ExtendedList<T> implements Iterable<T> {
     public ExtendedList(Class<T> classType, int size) {
 	workArray = (T[]) Array.newInstance(classType, size);
 	this.size = size;
-	this.classType = classType;
     }
 
     public void add(T arg0) {
@@ -75,7 +78,7 @@ public class ExtendedList<T> implements Iterable<T> {
 	return count;
     }
 
-    public <T extends Comparable<? super T> > void sort() {
+    public <T extends Comparable<? super T>> void sort() {
 	Arrays.sort(this.getList());
     }
 
@@ -89,7 +92,7 @@ public class ExtendedList<T> implements Iterable<T> {
 
     public T[] copyToArray(int begin, int end) {
 	rangeCheck(begin);
-	rangeCheck(end-1);
+	rangeCheck(end - 1);
 
 	begin = Math.min(begin, end);
 	end = Math.max(begin, end);
@@ -101,34 +104,72 @@ public class ExtendedList<T> implements Iterable<T> {
 	}
 	return array;
     }
-    
+
     public ArrayList<T> copyToArrayList(int begin, int end) {
 	rangeCheck(begin);
-	rangeCheck(end-1);
-	
+	rangeCheck(end - 1);
+
 	begin = Math.min(begin, end);
 	end = Math.max(begin, end);
 	List<T> list = new ArrayList<T>();
-	for(int i = begin; i < end; i++) {
+	for (int i = begin; i < end; i++) {
 	    list.add(workArray[i]);
 	}
 	return (ArrayList<T>) list;
     }
-    
+
     public LinkedList<T> copyToLinkedList(int begin, int end) {
-   	rangeCheck(begin);
-   	rangeCheck(end - 1);
+	rangeCheck(begin);
+	rangeCheck(end - 1);
 
-   	begin = Math.min(begin, end);
-   	end = Math.max(begin, end);
+	begin = Math.min(begin, end);
+	end = Math.max(begin, end);
 
-   	List<T> list = new LinkedList<T>();
-   	for (int i = begin; i < end; i++) {
-   	    list.add(workArray[i]);
-   	}
-   	return (LinkedList<T>) list;
-       }
- 
+	List<T> list = new LinkedList<T>();
+	for (int i = begin; i < end; i++) {
+	    list.add(workArray[i]);
+	}
+	return (LinkedList<T>) list;
+    }
+
+    public boolean compareToOtherList(List<T> listA) {
+	List<T> listB = copyToArrayList(0, workArray.length);
+	return listA.containsAll(listB) && listB.containsAll(listA);
+    }
+
+    public boolean compareToOtherList(ExtendedList<T> listA) {
+	if (!indexOutRange(listA.size(), workArray.length))
+	    return false;
+
+	ExtendedList<T> listB = copyToExtendedlist(0, workArray.length);
+	return listA.containsAll(listB) && listB.containsAll(listA);
+    }
+
+    private ExtendedList<T> copyToExtendedlist(int begin, int end) {
+	rangeCheck(begin);
+	rangeCheck(end - 1);
+
+	begin = Math.min(begin, end);
+	end = Math.max(begin, end);
+
+	ExtendedList<T> extendedList = new ExtendedList<T>(classType);
+
+	for (int i = begin; i < end; i++) {
+	    extendedList.add(workArray[i]);
+	}
+	return extendedList;
+    }
+
+    public boolean containsAll(ExtendedList<T> extendedList) {
+
+	int length = Math.min(extendedList.size(), workArray.length);
+
+	for (int i = 0; i < length; i++) {
+	    if (extendedList.find(workArray[i]) == -1)
+		return false;
+	}
+	return true;
+    }
 
     private void rangeCheck(int index) {
 	if (index >= this.size() || index < 0)
@@ -148,6 +189,10 @@ public class ExtendedList<T> implements Iterable<T> {
 		newCapacity = minimalCapacity;
 	    workArray = Arrays.copyOf(workArray, newCapacity);
 	}
+    }
+
+    private boolean indexOutRange(int a, int b) {
+	return a == b;
     }
 
     @Override
