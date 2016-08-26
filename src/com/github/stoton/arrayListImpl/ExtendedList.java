@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
@@ -24,6 +25,7 @@ public class ExtendedList<T> implements Iterable<T> {
     public ExtendedList(Class<T> classType, int size) {
 	workArray = (T[]) Array.newInstance(classType, size);
 	this.size = size;
+	this.classType = classType;
     }
 
     public void add(T arg0) {
@@ -73,7 +75,7 @@ public class ExtendedList<T> implements Iterable<T> {
 	return count;
     }
 
-    public <T extends Comparable<? super T>> void sort() {
+    public <T extends Comparable<? super T> > void sort() {
 	Arrays.sort(this.getList());
     }
 
@@ -99,6 +101,33 @@ public class ExtendedList<T> implements Iterable<T> {
 	}
 	return array;
     }
+    
+    public ArrayList<T> copyToArrayList(int begin, int end) {
+	rangeCheck(begin);
+	rangeCheck(end-1);
+	
+	begin = Math.min(begin, end);
+	end = Math.max(begin, end);
+	List<T> list = new ArrayList<T>();
+	for(int i = begin; i < end; i++) {
+	    list.add(workArray[i]);
+	}
+	return (ArrayList<T>) list;
+    }
+    
+    public LinkedList<T> copyToLinkedList(int begin, int end) {
+   	rangeCheck(begin);
+   	rangeCheck(end - 1);
+
+   	begin = Math.min(begin, end);
+   	end = Math.max(begin, end);
+
+   	List<T> list = new LinkedList<T>();
+   	for (int i = begin; i < end; i++) {
+   	    list.add(workArray[i]);
+   	}
+   	return (LinkedList<T>) list;
+       }
  
 
     private void rangeCheck(int index) {
