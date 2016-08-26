@@ -3,15 +3,13 @@ package com.github.stoton.arrayListImpl;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("unchecked")
 public class ExtendedList<T> implements Iterable<T> {
@@ -78,6 +76,7 @@ public class ExtendedList<T> implements Iterable<T> {
 	return count;
     }
 
+    @SuppressWarnings("hiding")
     public <T extends Comparable<? super T>> void sort() {
 	Arrays.sort(this.getList());
     }
@@ -171,6 +170,17 @@ public class ExtendedList<T> implements Iterable<T> {
 	return true;
     }
 
+    public boolean regex(int index, String regex) {
+	rangeCheck(index);
+	if (classType.isInstance(regex) || workArray[0] instanceof Number || workArray[0] instanceof CharSequence) {
+	    String pattern = String.valueOf(workArray[index]);
+	    Pattern validate = Pattern.compile(regex);
+	    Matcher matcher = validate.matcher((CharSequence) pattern);
+	    return matcher.matches();
+	}
+	return false;
+    }
+
     private void rangeCheck(int index) {
 	if (index >= this.size() || index < 0)
 	    throw new IndexOutOfBoundsException();
@@ -199,7 +209,6 @@ public class ExtendedList<T> implements Iterable<T> {
     public Iterator<T> iterator() {
 	return new Iterator<T>() {
 
-	    private int start = 0;
 	    private int current;
 
 	    @Override
